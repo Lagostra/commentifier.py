@@ -9,7 +9,7 @@ with open(sys.argv[1], 'r') as file:
 
     i = 0
     while i < len(lines):
-        index = lines[i].find('def')
+        index = lines[i].find('def ')
         if index != -1:
             function_name = lines[i][index + 3:lines[i].index('(')].strip()
             function_name = ' '.join(function_name.split('_'))
@@ -20,6 +20,21 @@ with open(sys.argv[1], 'r') as file:
             lines.insert(i+2, indent + function_name.capitalize())
             lines.insert(i+3, indent + '"""')
             i += 3
+
+        index = lines[i].find('class ')
+
+        if index != -1:
+            i2 = lines[i].find('(')
+            i2 = i2 if i2 != -1 else lines[i].find(':')
+            class_name = lines[i][index + 5:i2].strip()
+
+            indent = lines[i + 1][:len(lines[i + 1]) - len(lines[i + 1].lstrip())]
+
+            lines.insert(i + 1, indent + '"""')
+            lines.insert(i + 2, indent + class_name + ' Class')
+            lines.insert(i + 3, indent + '"""')
+            i += 3
+
         i += 1
 
 with open(sys.argv[1], 'w') as file:
