@@ -1,8 +1,12 @@
 import sys
 
+
 def find_indent(lines, index):
     while len(lines[index]) == len(lines[index].lstrip()):
         index += 1
+
+    if lines[index].lstrip().startswith('"""'):
+        return False
 
     return lines[index][:len(lines[index]) - len(lines[index].lstrip())]
 
@@ -22,6 +26,10 @@ with open(sys.argv[1], 'r') as file:
 
             indent = find_indent(lines, i + 1)
 
+            if not indent:
+                i += 1
+                continue
+
             lines.insert(i+1, indent + '"""')
             lines.insert(i+2, indent + function_name.capitalize())
             lines.insert(i+3, indent + '"""')
@@ -35,6 +43,10 @@ with open(sys.argv[1], 'r') as file:
             class_name = lines[i][index + 5:i2].strip()
 
             indent = find_indent(lines, i + 1)
+
+            if not indent:
+                i += 1
+                continue
 
             lines.insert(i + 1, indent + '"""')
             lines.insert(i + 2, indent + class_name + ' Class')
